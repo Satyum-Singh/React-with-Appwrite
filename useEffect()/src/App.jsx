@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react'
 
 function App() {
   const [resourceType, setResourceType] = useState('posts')
-  const [items, setItems] = useState([])
+  const [items, setItem] = useState([])
 
   useEffect(() => {
     fetch(`https://jsonplaceholder.typicode.com/${resourceType}`)
       .then(res => res.json())
-      .then(json => setItems(json))
+      .then(json => setItem(json))
   }, [resourceType])
 
   return (
