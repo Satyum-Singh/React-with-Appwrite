@@ -1,3 +1,10 @@
+// useRef() is used to access the DOM element directly. It is used to store the reference of the DOM element. 
+// It is used to access the previous state value. It is used to store the previous state
+// useRef is primarily used to persist values between renders without causing a re-render when the value changes.
+// It returns a mutable ref object whose.current property is initialized to the passed argument.
+// The.current property can hold any value, and it persists between renders without causing a re - render.
+// useState is used for managing stateful values that trigger re - renders, while useRef is used for accessing and persisting mutable values that do not trigger re - renders.
+
 import { useState, useRef, useEffect } from 'react'
 
 export default function App() {
