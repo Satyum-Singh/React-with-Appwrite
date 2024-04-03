@@ -1,8 +1,11 @@
 // useMemo is a hook that will only recompute the memoized value when one of the dependencies has changed. 
 // This optimization helps to avoid expensive calculations on every render.
-// 
+// It is a performance optimization feature that is used to memoize the output of a function.
+// It is similar to useCallback, but useCallback returns the function itself, while useMemo calls the function and returns the result.
+// useMemo can also be used for referential equality, but it is mostly used for performance optimization.
 
 
+import { useEffect } from 'react'
 import { useState, useMemo } from 'react'
 
 function App() {
@@ -17,6 +20,10 @@ function App() {
       color: dark ? 'white' : 'black'
     }
   }, [dark])
+
+  useEffect(() => {
+    console.log('Theme Changed');
+  }, [themeStyles])
 
   return (
     <>
