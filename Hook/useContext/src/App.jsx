@@ -1,14 +1,13 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
+import FunctionContextComponent from './FunctionContextComponent'
+import { ThemeProvide } from './ThemeContext'
 
 function App() {
-  const [dark, setDark] = useState(true)
-  function toggleTheme(){
-    setDark(prev => !prev)
-  }
-
   return (
     <>
-      
+      <ThemeProvider>
+        <FunctionContextComponent />
+      </ThemeProvider>
     </>
   )
 }
