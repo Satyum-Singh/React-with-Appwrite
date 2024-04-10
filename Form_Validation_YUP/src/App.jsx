@@ -1,12 +1,11 @@
 import './App.css'
-import FormWithoutYUP from './components/form-without-yup'
+import FormWithYUP from './components/form-with-yup'
 
 function App() {
 
   return (
     <div>
-      <div>Form Validations</div>
-      <FormWithoutYUP />
+      <FormWithYUP />
     </div>
   )
 }

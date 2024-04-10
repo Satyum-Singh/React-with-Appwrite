@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
 import { useState } from 'react';
+import * as Yup from 'yup';
 
-function FormWithoutYUP() {
+function FormWithYUP() {
 
     const [formData, setFormData] = useState({
         firstName: "",
@@ -17,71 +18,52 @@ function FormWithoutYUP() {
     })
 
     const [error, setError] = useState();
-    const isValidEmail = (email) => {
-        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-        return emailRegex.test(email);
-    }
 
-    const isValidPhoneNumber = (phoneNumber) => {
-        const phoneRegex = /^[0-9]{10}$/;
-        return phoneRegex.test(phoneNumber);
-    }
+    const validationSchema = Yup.object({
+        firstName: Yup.string().required("First Name is required"),
+        lastName: Yup.string().required("Last Name is required"),
+        email: Yup.string()
+            .email("Email is invalid")
+            .required("Email is required"),
+        phoneNumber: Yup.string()
+            .matches(/^[0-9]{10}$/, "Phone Number is must be atleast 10 digits")
+            .required("Phone Number is required"),
+        password: Yup.string()
+            .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/, "Password is must be at least 8 characters long and contains atleast one uppercase, one lowercase, one number and one special character")
+            .required("Password is required"),
+        confirmPassword: Yup.string()
+            .oneOf([Yup.ref('password')], 'Password and Confirm Password should match')
+            .required("Confirm Password is required"),
+        age: Yup.number()
+            .min(18, "Age should be greater than 18")
+            .max(100, "Age should be less than 100")
+            .required("Age is required"),
+        gender: Yup.string()
+            .required("Gender is required"),
+        interests: Yup.array()
+            .min(1, "Atleast one interest is required")
+            .required("Atleast one interest is required"),
+        birthDate: Yup.date().required("Date of Birth is required"),
+    })
 
-    const isValidPassword = (password) => {
-        const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
-        return passwordRegex.test(password);
-    }
+    // let parsedData = validationSchema.cast(formData);
 
-    const isValidAge = (age) => {
-        return parseInt(age) >= 18 && parseInt(age) <= 100;
-    }
-
-    const ValidateForm = () => {
-        let newErrors = {};
-        if (!formData.firstName) {
-            newErrors.firstName = "First Name is required";
-        }
-        else if (!formData.lastName) {
-            newErrors.lastName = "Last Name is required"
-        }
-        else if (!formData.email) {
-            newErrors.email = "Email is required"
-        }
-        else if (!isValidEmail(formData.email)) {
-            newErrors.email = "Email is invalid"
-        }
-        else if (!isValidPhoneNumber(formData.phoneNumber)) {
-            newErrors.phoneNumber = "Phone Number is must be atleast 10 digits";
-        }
-        else if (!isValidPassword(formData.password)) {
-            newErrors.password = "Password is must be at least 8 characters long and contains atleast one uppercase, one lowercase, one number and one special character";
-        }
-        else if (formData.password !== formData.confirmPassword) {
-            newErrors.confirmPassword = "Password and Confirm Password should match";
-        }
-        else if (!isValidAge(formData.age)) {
-            newErrors.confirmPassword = "You must be atleast 18 years old and not older than 100 years";
-        }
-        else if (formData.interests.length === 0) {
-            newErrors.interests = "Atleast one interest should be selected";
-        }
-        else if (!formData.birthDate) {
-            newErrors.birthDate = "Date of Birth is required";
-        }
-
-        setError(newErrors);
-        return Object.keys(newErrors).length === 0;
-    }
-
-    console.log(error);
-
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        let isValid = ValidateForm();
-        if (isValid) console.log("Form Submitted", formData);
-        else console.log("Form Validation Failed");
+        try {
+            await validationSchema.validate(formData, { abortEarly: false });
+            console.log("Form Submitted Successfully");
+        }
+        catch (error) {
+            const newErrors = {};
+            error.inner.forEach((err) => {
+                newErrors[err.path] = err.message;
+            })
+            setError(newErrors);
+        }
     }
 
+    // Handle Change function of the form
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -90,6 +72,7 @@ function FormWithoutYUP() {
         })
     }
 
+    // Handle Checkbox Change function of the form
     const handleCheckboxChange = (e) => {
         const { name, checked } = e.target;
         let updated = [...formData.interests];
@@ -109,6 +92,8 @@ function FormWithoutYUP() {
     return (
         <div>
             <form className='form' onSubmit={handleSubmit}>
+
+                {/* First Name */}
                 <div>
                     <label>First Name : </label>
                     <input
@@ -121,6 +106,8 @@ function FormWithoutYUP() {
                     />
                     {error && error.firstName && <p className='error'>{error.firstName}</p>}
                 </div>
+
+                {/* Last Name */}
                 <div>
                     <label>Last Name : </label>
                     <input
@@ -133,6 +120,8 @@ function FormWithoutYUP() {
                     />
                     {error && error.lastName && <p className='error'>{error.lastName}</p>}
                 </div>
+
+                {/* Email */}
                 <div>
                     <label>Email : </label>
                     <input
@@ -144,6 +133,8 @@ function FormWithoutYUP() {
                     />
                     {error && error.email && <p className='error'>{error.email}</p>}
                 </div>
+
+                {/* Phone Number */}
                 <div>
                     <label>Phone Number : </label>
                     <input
@@ -156,6 +147,8 @@ function FormWithoutYUP() {
                     />
                     {error && error.phoneNumber && <p className='error'>{error.phoneNumber}</p>}
                 </div>
+
+                {/* Password */}
                 <div>
                     <label>Password : </label>
                     <input
@@ -168,6 +161,8 @@ function FormWithoutYUP() {
                     />
                     {error && error.password && <p className='error'>{error.password}</p>}
                 </div>
+
+                {/* Confirm Password */}
                 <div>
                     <label>Confirm Password : </label>
                     <input
@@ -180,6 +175,8 @@ function FormWithoutYUP() {
                     />
                     {error && error.confirmPassword && <p className='error'>{error.confirmPassword}</p>}
                 </div>
+
+                {/* Age */}
                 <div>
                     <label>Age : </label>
                     <input
@@ -192,14 +189,19 @@ function FormWithoutYUP() {
                     />
                     {error && error.age && <p className='error'>{error.age}</p>}
                 </div>
+
+                {/* Gender */}
                 <div>
                     <label>Gender : </label>
-                    <select name="firstName" value={formData.gender} onChange={handleChange} required>
+                    <select name="gender" value={formData.gender} onChange={handleChange} >
                         <option value="male">Male</option>
                         <option value="Female">Female</option>
                         <option value="Others">Others</option>
                     </select>
+                    {error && error.gender && <p className='error'>{error.gender}</p>}
                 </div>
+
+                {/* Interests */}
                 <div>
                     <label>Interests : </label>
                     <label>
@@ -231,6 +233,8 @@ function FormWithoutYUP() {
                     </label>
                     {error && error.interests && <p className='error'>{error.interests}</p>}
                 </div>
+
+                {/* DOB */}
                 <div>
                     <label>Date of Birth : </label>
                     <input
@@ -249,4 +253,4 @@ function FormWithoutYUP() {
     )
 }
 
-export default FormWithoutYUP
+export default FormWithYUP
