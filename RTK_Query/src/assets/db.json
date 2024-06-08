@@ -1,16 +1,28 @@
 {
-    "posts":[
-        {
-            "title":"Post 1",
-            "body":"This is post 1",
-            "userId":23,
-            "id":1
-        },
-        {
-            "title":"Post 2",
-            "body":"This is post 2",
-            "userId":24,
-            "id":2
-        }
-    ]
+  "posts": [
+    {
+      "title": "Post 1",
+      "body": "This is post 1",
+      "userId": 23,
+      "id": "1"
+    },
+    {
+      "title": "Post 2",
+      "body": "This is post 2",
+      "userId": 24,
+      "id": "2"
+    },
+    {
+      "id": 757.5458429963768,
+      "title": "Post 3",
+      "body": "This is post 3 ",
+      "userId": 984.0442882962168
+    },
+    {
+      "id": 334.2990839538065,
+      "title": "Post 4",
+      "body": "This is post 4",
+      "userId": 373.96858485312737
+    }
+  ]
 }
